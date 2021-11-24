@@ -42,35 +42,6 @@ public class NoticeServiceImplTest {
     @InjectMocks
     private NoticeServiceImpl noticeServiceImpl;
 
-    @Test
-    public void createNotice_successful() throws ParseException {
-        UserDetails applicationUser = mock(UserDetails.class);
-        Authentication authentication = mock(Authentication.class);
-        SecurityContext securityContext = mock(SecurityContext.class);
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
-        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(applicationUser);
-        MockMultipartFile file
-                = new MockMultipartFile(
-                "test",
-                "test.txt",
-                MediaType.TEXT_PLAIN_VALUE,
-                "test".getBytes()
-        );
-        UserEntity user = new UserEntity();
-        user.setUsername("test");
-        when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
-        MultipartFile[] multipartFile = {file};
-        NoticeDto noticeDto = new NoticeDto();
-        noticeDto.setContent("abc");
-        noticeDto.setTitle("abc123");
-        noticeDto.setAttachFiles(multipartFile);
-        noticeDto.setEndDate("2021-11-11 00:00:00");
-        noticeDto.setStartDate("2021-10-10 00:00:00");
-        noticeDto.setAttachFiles(multipartFile);
-        noticeServiceImpl.createNotice(noticeDto);
-    }
-
     @Test(expected = NullPointerException.class)
     public void whenCallCreateNotice_ThrowError() throws ParseException {
         Authentication authentication = mock(Authentication.class);

@@ -29,7 +29,7 @@ public class NoticeController {
      * Create new notice
      *
      * @param noticeEntity noticeEntity
-     * @return A string representing the identifier to use
+     * @return json noticeEntity
      * @throws ParseException If string's byte cannot be obtained
      */
     @PostMapping
@@ -37,18 +37,38 @@ public class NoticeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(noticeService.createNotice(noticeEntity));
     }
 
+    /**
+     * update new notice
+     *
+     * @param noticeEntity noticeEntity
+     * @return delete successful
+     * @throws Exception If string's byte cannot be obtained
+     */
     @PutMapping
-    public ResponseEntity<?> updateNotice(@RequestBody NoticeEntity noticeEntity) throws Exception{
-            noticeService.updateNotice(noticeEntity);
-        return ResponseEntity.status(HttpStatus.OK).body("update successfull");
+    public ResponseEntity<?> updateNotice(@RequestBody NoticeEntity noticeEntity) throws Exception {
+        noticeService.updateNotice(noticeEntity);
+        return ResponseEntity.status(HttpStatus.OK).body("update successful");
     }
 
+    /**
+     *Delete Notice
+     *
+     * @param id notice_id
+     * @return delete successful
+
+     */
     @DeleteMapping
     public ResponseEntity<?> deleteNotice(@RequestParam Long id) {
         noticeService.deleteNotice(id);
-        return ResponseEntity.status(HttpStatus.OK).body("delete successfull");
+        return ResponseEntity.status(HttpStatus.OK).body("delete successful");
     }
 
+    /**
+     *Delete Notice
+     *
+     * @return list json NoticeEntity
+
+     */
     @GetMapping
     public ResponseEntity<?> getAllNotices() {
         List<NoticeEntity> list = noticeService.getAll();

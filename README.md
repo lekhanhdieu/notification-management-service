@@ -22,7 +22,7 @@ REST API to manage notification information
 ## Installation
 
 - Clone the repository: 
-  *git clone https://github.com/thanhbcit/notice-management.git*
+  *git clone https://github.com/lekhanhdieu/notification-management-service.git*
 - Install dependencies: 
    *cd [project_name]*; 
    *mvn install*

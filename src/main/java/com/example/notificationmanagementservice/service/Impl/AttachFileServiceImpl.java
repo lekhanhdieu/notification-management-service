@@ -11,6 +11,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 
+/**
+ *AttachFileServiceImpl
+ *
+ * @author FPT Software
+ */
+
 @Service
 public class AttachFileServiceImpl implements AttachFileService {
 

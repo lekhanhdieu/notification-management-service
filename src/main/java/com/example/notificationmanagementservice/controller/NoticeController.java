@@ -1,4 +1,4 @@
-package com.example.notificationmanagementservice.api;
+package com.example.notificationmanagementservice.controller;
 
 import com.example.notificationmanagementservice.entity.dto.NoticeDto;
 import com.example.notificationmanagementservice.entity.NoticeEntity;
@@ -12,38 +12,54 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.util.List;
 
+/**
+ * CREST API to manage notification information.
+ *
+ * @author FPT Software
+ */
+
 @Controller
-@RequestMapping("/notice")
+@RequestMapping("/notices")
 public class NoticeController {
     @Autowired
     NoticeService noticeService;
-
-    @PostMapping(path = "/create")
+    /**
+     * Create new notice
+     *
+     * @param input input
+     * @return A string representing the identifier to use
+     * @throws ParseException If string's byte cannot be obtained
+     */
+    @PostMapping
     public ResponseEntity<?> createNotice(@ModelAttribute @RequestBody NoticeDto noticeEntity) throws ParseException {
         return ResponseEntity.status(HttpStatus.CREATED).body(noticeService.createNotice(noticeEntity));
     }
 
     @PutMapping
-    public ResponseEntity<?> updateNotice(@RequestBody NoticeEntity noticeEntity){
-        noticeService.updateNotice(noticeEntity);
+    public ResponseEntity<?> updateNotice(@RequestBody NoticeEntity noticeEntity) {
+        try {
+            noticeService.updateNotice(noticeEntity);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
         return ResponseEntity.status(HttpStatus.OK).body("update successfull");
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteNotice(@RequestParam Long id){
+    public ResponseEntity<?> deleteNotice(@RequestParam Long id) {
         noticeService.deleteNotice(id);
         return ResponseEntity.status(HttpStatus.OK).body("delete successfull");
     }
 
-    @GetMapping(path = "/all")
+    @GetMapping
     public ResponseEntity<?> getAllNotices() {
         List<NoticeEntity> list = noticeService.getAll();
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<?> getNotice(@PathVariable("id") Long id) throws Exception {
-        NoticeEntity notice = new NoticeEntity();
+    public ResponseEntity<?> getNotice(@PathVariable("id") Long id) {
+        NoticeEntity notice;
         try {
             notice = noticeService.getNotice(id);
         } catch (Exception e) {

@@ -23,6 +23,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ *NoticeServiceImpl
+ *
+ * @author FPT Software
+ */
+
 @Slf4j
 @Service
 public class NoticeServiceImpl implements NoticeService {
@@ -35,13 +41,23 @@ public class NoticeServiceImpl implements NoticeService {
     @Autowired
     private AttachFileService attachFileService;
 
+    /**
+     * Create new notice
+     *
+     * @param input input
+     * @return A string representing the identifier to use
+     * @throws ParseException If string's byte cannot be obtained
+     */
     @Override
     public NoticeEntity createNotice(NoticeDto input) throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //check jwt
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
+
         String username = userDetails.getUsername();
         Date date = new Date();
+        //set data for noticeEntity
         NoticeEntity noticeEntity = new NoticeEntity();
         noticeEntity.setContent(input.getContent());
         noticeEntity.setTitle(input.getTitle());
@@ -57,12 +73,18 @@ public class NoticeServiceImpl implements NoticeService {
         }
         noticeEntity.setAttachFiles(attachFileEntities);
         noticeRepository.save(noticeEntity);
-        return null;
+        return noticeEntity;
     }
 
+    /**
+     * Update notice
+     *
+     * @param noticeEntity input
+     * @throws Exception If string's byte cannot be obtained
+     */
     @Override
-    public void updateNotice(NoticeEntity noticeEntity) {
-        NoticeEntity notice = noticeRepository.findById(noticeEntity.getId()).orElse(null);
+    public void updateNotice(NoticeEntity noticeEntity) throws Exception {
+        NoticeEntity notice = noticeRepository.findById(noticeEntity.getId()).orElseThrow(() -> new Exception("this notice doesn't exist"));
         log.info("Start findById result {}", notice);
         if (notice != null) {
             notice.setEndDate(noticeEntity.getEndDate());
@@ -72,18 +94,28 @@ public class NoticeServiceImpl implements NoticeService {
             noticeRepository.save(notice);
         }
     }
-
+    /**
+     * Delete notice new notice
+     *
+     * @param id Note id
+     */
     @Override
     public void deleteNotice(Long id) {
         noticeRepository.findById(id).ifPresent(noticeEntity -> noticeRepository.delete(noticeEntity));
     }
 
+    /**
+     * Get notice new notice before endDate
+     *
+     */
     @Override
     public List<NoticeEntity> getAll() {
         List<NoticeEntity> noticeEntities = new ArrayList<>();
         List<NoticeEntity> entityList = noticeRepository.findAll();
+        log.info("Start findAll result {}",  entityList);
         for (NoticeEntity noticeEntity : entityList) {
             Date date = new Date();
+            //check endDate
             if (!noticeEntity.getEndDate().before(date)) {
                 noticeEntities.add(noticeEntity);
             }
@@ -91,7 +123,12 @@ public class NoticeServiceImpl implements NoticeService {
 
         return noticeEntities;
     }
-
+    /**
+     * Get notice before endDate
+     *
+     * @param id input
+     * @throws Exception If string's byte cannot be obtained
+     */
     @Override
     public NoticeEntity getNotice(Long id) throws Exception {
         NoticeEntity notice = noticeRepository.findById(id).orElseThrow(() -> new Exception("this notice doesn't exist"));
@@ -102,21 +139,21 @@ public class NoticeServiceImpl implements NoticeService {
         }
         notice.setNumberOfView(notice.getNumberOfView() + 1);
         noticeRepository.saveAndFlush(notice);
+        log.info("Start saveAndFlush success with result {}: ", notice );
         return notice;
     }
 
-    public List<AttachFileEntity> saveFile(MultipartFile[] files) {
+    private List<AttachFileEntity> saveFile(MultipartFile[] files) {
         List<AttachFileEntity> attachFileEntities = new ArrayList<>();
         Arrays.asList(files).forEach(file -> {
             attachFileService.save(file);
-            //save to db
+            //save file into db
             try {
                 AttachFileEntity attachFileEntity = new AttachFileEntity();
                 Path pathFile = root.resolve(Objects.requireNonNull(file.getOriginalFilename()));
                 Resource resource = new UrlResource(pathFile.toUri());
                 attachFileEntity.setName(resource.getURL().getFile());
                 attachFileEntities.add(attachFileEntity);
-                System.out.println(resource.getURL());
             } catch (MalformedURLException e) {
                 throw new RuntimeException("Error: " + e.getMessage());
             } catch (IOException e) {

@@ -1,7 +1,6 @@
-package com.example.notificationmanagementservice.api;
+package com.example.notificationmanagementservice.controller;
 import com.example.notificationmanagementservice.entity.NoticeEntity;
 import com.example.notificationmanagementservice.entity.dto.NoticeDto;
-import com.example.notificationmanagementservice.entity.dto.NoticeInquiryDto;
 import com.example.notificationmanagementservice.service.AttachFileService;
 import com.example.notificationmanagementservice.service.CustomAccountService;
 import com.example.notificationmanagementservice.service.NoticeService;
@@ -33,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = NoticeController.class)
 @AutoConfigureMockMvc(addFilters = false)
 public class NoticeControllerTest {
-    private static final String BASE_URL = "/notice";
+    private static final String BASE_URL = "/notices";
 
     @MockBean
     private NoticeService noticeService;
@@ -63,7 +62,7 @@ public class NoticeControllerTest {
         noticeDto.setEndDate("2021-03-12 10:20:30");
         noticeDto.setStartDate("2021-09-12 10:20:30");
         Mockito.when(noticeService.createNotice(noticeDto)).thenReturn(noticeEntity);
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(BASE_URL +"/create")
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(noticeDto));
@@ -73,10 +72,12 @@ public class NoticeControllerTest {
     @Test
     public void testGetAllNotice() throws Exception{
         NoticeEntity noticeEntity = new NoticeEntity();
+        noticeEntity.setAuthor("aa");
+        noticeEntity.setTitle("fsdfsfs");
         List<NoticeEntity> noticeEntities = new ArrayList<>();
         noticeEntities.add(noticeEntity);
         Mockito.when(noticeService.getAll()).thenReturn(noticeEntities);
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(BASE_URL +"/all")
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder).andExpect(status().is2xxSuccessful());

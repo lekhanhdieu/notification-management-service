@@ -1,4 +1,4 @@
-package com.example.notificationmanagementservice.api;
+package com.example.notificationmanagementservice.controller;
 
 import com.example.notificationmanagementservice.dto.AuthRequest;
 import com.example.notificationmanagementservice.service.AttachFileService;

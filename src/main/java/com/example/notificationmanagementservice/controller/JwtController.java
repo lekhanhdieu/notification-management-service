@@ -1,4 +1,4 @@
-package com.example.notificationmanagementservice.api;
+package com.example.notificationmanagementservice.controller;
 
 import com.example.notificationmanagementservice.dto.AuthRequest;
 import com.example.notificationmanagementservice.utils.JwtUtil;
@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * User authentication
+ *
+ * @author FPT Software
+ */
 @RestController
 public class JwtController {
     @Autowired
@@ -35,7 +40,7 @@ public class JwtController {
                     new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
             );
         } catch (Exception ex) {
-            throw new Exception("inavalid username/password");
+            throw new Exception("invalid username/password");
         }
         return jwtUtil.generateToken(authRequest.getUsername());
     }

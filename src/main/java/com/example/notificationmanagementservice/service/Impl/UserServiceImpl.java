@@ -9,6 +9,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+/**
+ *UserServiceImpl
+ *
+ * @author FPT Software
+ */
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {

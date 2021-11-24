@@ -22,7 +22,6 @@ public class AttachFileEntity implements Serializable {
     @Column(name = "name")
     private String name;
 
-    // để k xử lý khi trả về json
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name="notice_id")

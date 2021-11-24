@@ -11,7 +11,7 @@ public interface NoticeService {
 
     NoticeEntity createNotice(NoticeDto userEntity) throws ParseException;
 
-    void updateNotice(NoticeEntity userEntity);
+    void updateNotice(NoticeEntity userEntity) throws Exception;
 
     void deleteNotice(Long id);
 

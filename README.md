@@ -3,7 +3,7 @@ REST API to manage notification information
 
 ## Features
 
-- CRUD notices: Implement notice registration, modification, deletion, and inquiry.*
+- CRUD notices: Implement notice registration, modification, deletion, and inquiry.
 - CRUD notices:  Implement user, modification, deletion, and inquiry.
 - Authentication with JWT: Generate JWT Access token and a random string for Refresh token the login.
 - Logger: Log info/error message into a log file

@@ -9,15 +9,16 @@ REST API to manage notification information
 - Logger: Log info/error message into a log file
 
 ## Technologies
-- SQLServer
+- JWT
 - Spring boot framework
 - Hibernate
 - Lombok
+- Mockito
 
 ## Prerequisites
 - JDK 8
 - Maven
-- SQL Database
+- SQL
 
 ## Installation
 
@@ -32,3 +33,8 @@ REST API to manage notification information
 - Start Application: 
   *mvn spring-boot:run.*
 - Note: An IDE like IntelliJ can perform these tasks for you automatically
+## How To Get Started
+- You need to run project and create one user: API POST/user
+- Use information user you just created to get token by api POST/login
+- Use that token to perform actions: get, delete, update notifications and users
+- can you check DB in the link http://localhost:8080/h2-console/

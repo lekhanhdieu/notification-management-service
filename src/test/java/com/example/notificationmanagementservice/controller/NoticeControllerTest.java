@@ -1,6 +1,8 @@
 package com.example.notificationmanagementservice.controller;
+import com.example.notificationmanagementservice.dto.NoticeResponseDto;
 import com.example.notificationmanagementservice.entity.NoticeEntity;
-import com.example.notificationmanagementservice.entity.dto.NoticeDto;
+import com.example.notificationmanagementservice.entity.UserEntity;
+import com.example.notificationmanagementservice.dto.NoticeDto;
 import com.example.notificationmanagementservice.service.AttachFileService;
 import com.example.notificationmanagementservice.service.CustomAccountService;
 import com.example.notificationmanagementservice.service.NoticeService;
@@ -57,8 +59,8 @@ public class NoticeControllerTest {
     public void testCreateNotice() throws Exception{
         NoticeEntity noticeEntity = new NoticeEntity();
         NoticeDto noticeDto = new NoticeDto();
-        noticeDto.setContent("mnbmnb");
-        noticeDto.setTitle("mnbbmnb");
+        noticeDto.setContent("Exec");
+        noticeDto.setTitle("adfcsf");
         noticeDto.setEndDate("2021-03-12 10:20:30");
         noticeDto.setStartDate("2021-09-12 10:20:30");
         Mockito.when(noticeService.createNotice(noticeDto)).thenReturn(noticeEntity);
@@ -72,7 +74,10 @@ public class NoticeControllerTest {
     @Test
     public void testGetAllNotice() throws Exception{
         NoticeEntity noticeEntity = new NoticeEntity();
-        noticeEntity.setAuthor("aa");
+        UserEntity user =  new UserEntity();
+        user.setAge("32");
+        user.setUsername("123");
+        noticeEntity.setUserEntity(user);
         noticeEntity.setTitle("fsdfsfs");
         List<NoticeEntity> noticeEntities = new ArrayList<>();
         noticeEntities.add(noticeEntity);
@@ -105,12 +110,28 @@ public class NoticeControllerTest {
 
     @Test
     public void testGetNotice() throws Exception{
-        NoticeEntity noticeEntity =  new NoticeEntity();
+        NoticeResponseDto noticeEntity =  new NoticeResponseDto();
         when(noticeService.getNotice(any())).thenReturn(noticeEntity);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(BASE_URL+"/1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
+    }
+
+    @Test(expected = Exception.class)
+    public void testCreateNotice_throwException() throws Exception{
+        NoticeEntity noticeEntity = new NoticeEntity();
+        NoticeDto noticeDto = new NoticeDto();
+        noticeDto.setContent("Exec");
+        noticeDto.setTitle("Exec");
+        noticeDto.setEndDate("2021-06-12 10:20:30");
+        noticeDto.setStartDate("2021-06-12 10:20:30");
+        doThrow(Exception.class).when(noticeService).createNotice(any());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(asJsonString(noticeDto));
+        mockMvc.perform(requestBuilder).andExpect(status().is5xxServerError());
     }
 
     public static String asJsonString(final Object obj) {

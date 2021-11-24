@@ -1,4 +1,4 @@
-package com.example.notificationmanagementservice.service.Impl;
+package com.example.notificationmanagementservice.service.impl;
 
 import com.example.notificationmanagementservice.service.AttachFileService;
 import org.springframework.stereotype.Service;

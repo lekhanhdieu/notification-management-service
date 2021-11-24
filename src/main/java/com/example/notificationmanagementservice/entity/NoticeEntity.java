@@ -1,5 +1,6 @@
 package com.example.notificationmanagementservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,19 +23,28 @@ public class NoticeEntity implements Serializable {
 
     @Column(name = "title")
     private String title;
+
     @Column(name = "content")
     private String content;
+
     @Column(name = "start_date")
     private Date startDate;
+
     @Column(name = "end_date")
     private Date endDate;
+
     @Column(name = "number_view")
     private Integer numberOfView;
-    @Column(name = "author")
-    private String author;
+
     @Column(name = "registration_date")
     private Date registrationDate;
+
     @OneToMany(mappedBy="noticeEntity",cascade=CascadeType.ALL)
     private List<AttachFileEntity> attachFiles;
+
+    @ManyToOne
+    @JoinColumn(name = "author")
+    @JsonIgnore
+    private UserEntity userEntity;
 
 }

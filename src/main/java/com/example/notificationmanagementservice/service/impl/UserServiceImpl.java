@@ -1,17 +1,21 @@
-package com.example.notificationmanagementservice.service.Impl;
+package com.example.notificationmanagementservice.service.impl;
 
 import com.example.notificationmanagementservice.repository.UserRepository;
 import com.example.notificationmanagementservice.entity.UserEntity;
 import com.example.notificationmanagementservice.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+
 /**
- *UserServiceImpl
+ * UserServiceImpl
  *
  * @author FPT Software
  */
@@ -19,10 +23,10 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserEntity getUser(String name) {
@@ -36,6 +40,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity createUser(UserEntity userEntity) {
+        UserEntity user = userRepository.findByUsername(userEntity.getUsername()).orElse(null);
+        if (user != null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "already exist");
+        }
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
         return userRepository.save(userEntity);
     }

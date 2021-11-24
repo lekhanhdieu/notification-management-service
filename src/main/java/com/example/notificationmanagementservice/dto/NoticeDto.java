@@ -1,4 +1,4 @@
-package com.example.notificationmanagementservice.entity.dto;
+package com.example.notificationmanagementservice.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

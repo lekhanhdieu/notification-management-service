@@ -1,6 +1,7 @@
 package com.example.notificationmanagementservice.controller;
 
-import com.example.notificationmanagementservice.entity.dto.NoticeDto;
+import com.example.notificationmanagementservice.dto.NoticeDto;
+import com.example.notificationmanagementservice.dto.NoticeResponseDto;
 import com.example.notificationmanagementservice.entity.NoticeEntity;
 import com.example.notificationmanagementservice.service.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,11 @@ import java.util.List;
 public class NoticeController {
     @Autowired
     NoticeService noticeService;
+
     /**
      * Create new notice
      *
-     * @param input input
+     * @param noticeEntity noticeEntity
      * @return A string representing the identifier to use
      * @throws ParseException If string's byte cannot be obtained
      */
@@ -36,12 +38,8 @@ public class NoticeController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateNotice(@RequestBody NoticeEntity noticeEntity) {
-        try {
+    public ResponseEntity<?> updateNotice(@RequestBody NoticeEntity noticeEntity) throws Exception{
             noticeService.updateNotice(noticeEntity);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
         return ResponseEntity.status(HttpStatus.OK).body("update successfull");
     }
 
@@ -58,13 +56,8 @@ public class NoticeController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<?> getNotice(@PathVariable("id") Long id) {
-        NoticeEntity notice;
-        try {
-            notice = noticeService.getNotice(id);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public ResponseEntity<?> getNotice(@PathVariable("id") Long id) throws Exception {
+        NoticeResponseDto notice = noticeService.getNotice(id);
         return new ResponseEntity<>(notice, HttpStatus.OK);
     }
 }

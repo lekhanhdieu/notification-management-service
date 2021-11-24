@@ -2,7 +2,6 @@ package com.example.notificationmanagementservice.service.impl;
 
 import com.example.notificationmanagementservice.entity.UserEntity;
 import com.example.notificationmanagementservice.repository.UserRepository;
-import com.example.notificationmanagementservice.service.Impl.UserServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,11 +39,11 @@ public class UserServiceImplTest {
     public void whenGetCreateUser_success() {
         UserEntity user = new UserEntity();
         user.setPassword("123");
-        UserEntity user1 = new UserEntity();
+        UserEntity userMock = new UserEntity();
         Mockito.when(userRepository.save(any())).thenReturn(user);
         Mockito.when(passwordEncoder.encode(any())).thenReturn("user");
-        user1 = userService.createUser(user);
-        Assert.assertEquals(user, user1);
+        userMock = userService.createUser(user);
+        Assert.assertEquals(user, userMock);
     }
 
     @Test

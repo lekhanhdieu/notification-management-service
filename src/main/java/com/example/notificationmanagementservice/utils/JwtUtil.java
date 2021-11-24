@@ -14,7 +14,7 @@ import java.util.function.Function;
 @Service
 public class JwtUtil {
 
-    private String secret = "javatechie";
+    private final String secret = "javadoc";
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -32,12 +32,12 @@ public class JwtUtil {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
 
-    // Lấy thông tin user từ jwt
+    // Get user information from jwt
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    // Tạo ra jwt từ thông tin user
+    // Generate jwt from user information
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, username);

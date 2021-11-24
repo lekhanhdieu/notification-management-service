@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @EqualsAndHashCode
@@ -30,4 +31,7 @@ public class UserEntity {
 
     @Column(name = "phone")
     private String phone;
+
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
+    private List<NoticeEntity> noticeEntities;
 }

@@ -1,10 +1,10 @@
 package com.example.notificationmanagementservice.service.impl;
 
 import com.example.notificationmanagementservice.entity.NoticeEntity;
-import com.example.notificationmanagementservice.entity.dto.NoticeDto;
+import com.example.notificationmanagementservice.entity.UserEntity;
+import com.example.notificationmanagementservice.dto.NoticeDto;
 import com.example.notificationmanagementservice.repository.NoticeRepository;
-import com.example.notificationmanagementservice.service.AttachFileService;
-import com.example.notificationmanagementservice.service.Impl.NoticeServiceImpl;
+import com.example.notificationmanagementservice.repository.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -22,14 +22,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 @RunWith(MockitoJUnitRunner.class)
 public class NoticeServiceImplTest {
     private final Path root = Paths.get("uploads");
@@ -38,13 +37,13 @@ public class NoticeServiceImplTest {
     private NoticeRepository noticeRepository;
 
     @Mock
-    private AttachFileService attachFileService;
+    private UserRepository userRepository;
 
     @InjectMocks
     private NoticeServiceImpl noticeServiceImpl;
 
     @Test
-    public void whenCallCreateNotice_sucessfull() throws ParseException {
+    public void createNotice_successful() throws ParseException {
         UserDetails applicationUser = mock(UserDetails.class);
         Authentication authentication = mock(Authentication.class);
         SecurityContext securityContext = mock(SecurityContext.class);
@@ -53,15 +52,18 @@ public class NoticeServiceImplTest {
         when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(applicationUser);
         MockMultipartFile file
                 = new MockMultipartFile(
-                "abcd",
-                "zxc.txt",
+                "test",
+                "test.txt",
                 MediaType.TEXT_PLAIN_VALUE,
-                "zxc".getBytes()
+                "test".getBytes()
         );
+        UserEntity user = new UserEntity();
+        user.setUsername("test");
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
         MultipartFile[] multipartFile = {file};
         NoticeDto noticeDto = new NoticeDto();
         noticeDto.setContent("abc");
-        noticeDto.setTitle("zxc");
+        noticeDto.setTitle("abc123");
         noticeDto.setAttachFiles(multipartFile);
         noticeDto.setEndDate("2021-11-11 00:00:00");
         noticeDto.setStartDate("2021-10-10 00:00:00");
@@ -118,26 +120,36 @@ public class NoticeServiceImplTest {
     }
 
     @Test
-    public void whenCallGetById_success() throws Exception {
+    public void getById_success() throws Exception {
+        UserEntity user = new UserEntity();
         NoticeEntity noticeEntity = new NoticeEntity();
         noticeEntity.setTitle("abc");
-        noticeEntity.setContent("xzcv");
-        noticeEntity.setAuthor("abc");
+        noticeEntity.setContent("123");
+        noticeEntity.setUserEntity(user);
         noticeEntity.setNumberOfView(1);
-        noticeEntity.setEndDate(new Date(2021, 12, 22));
+        noticeEntity.setEndDate(new Date(2021,12,22));
         Mockito.when(noticeRepository.findById(any())).thenReturn(Optional.of(noticeEntity));
         noticeServiceImpl.getNotice(any());
     }
 
     @Test(expected = Exception.class)
     public void whenCallGetById_throwError() throws Exception {
-        NoticeEntity noticeEntity = new NoticeEntity();
-        noticeEntity.setTitle("abc");
-        noticeEntity.setContent("mnbm");
-        noticeEntity.setAuthor("user");
-        noticeEntity.setEndDate(new Date());
+        NoticeEntity noticeEntity = setDataNoticeEntity();
         Mockito.when(noticeRepository.findById(any())).thenReturn(Optional.of(noticeEntity));
         noticeServiceImpl.getNotice(any());
+    }
+
+    private NoticeEntity setDataNoticeEntity() {
+        NoticeEntity noticeEntity = new NoticeEntity();
+        UserEntity user = new UserEntity();
+        user.setAge("32");
+        user.setPhone("012012");
+        user.setUsername("asas");
+        noticeEntity.setTitle("abc");
+        noticeEntity.setContent("mnbm");
+        noticeEntity.setUserEntity(user);
+        noticeEntity.setEndDate(new Date());
+        return noticeEntity;
     }
 
 }

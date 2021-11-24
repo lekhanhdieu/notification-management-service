@@ -1,9 +1,12 @@
-package com.example.notificationmanagementservice.service.Impl;
+package com.example.notificationmanagementservice.service.impl;
 
+import com.example.notificationmanagementservice.dto.NoticeResponseDto;
 import com.example.notificationmanagementservice.entity.AttachFileEntity;
 import com.example.notificationmanagementservice.entity.NoticeEntity;
-import com.example.notificationmanagementservice.entity.dto.NoticeDto;
+import com.example.notificationmanagementservice.entity.UserEntity;
+import com.example.notificationmanagementservice.dto.NoticeDto;
 import com.example.notificationmanagementservice.repository.NoticeRepository;
+import com.example.notificationmanagementservice.repository.UserRepository;
 import com.example.notificationmanagementservice.service.AttachFileService;
 import com.example.notificationmanagementservice.service.NoticeService;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +44,9 @@ public class NoticeServiceImpl implements NoticeService {
     @Autowired
     private AttachFileService attachFileService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     /**
      * Create new notice
      *
@@ -54,8 +60,8 @@ public class NoticeServiceImpl implements NoticeService {
         //check jwt
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-
         String username = userDetails.getUsername();
+        UserEntity user = userRepository.findByUsername(username).orElse(null);
         Date date = new Date();
         //set data for noticeEntity
         NoticeEntity noticeEntity = new NoticeEntity();
@@ -64,7 +70,7 @@ public class NoticeServiceImpl implements NoticeService {
         noticeEntity.setStartDate(formatter.parse(input.getStartDate()));
         noticeEntity.setEndDate(formatter.parse(input.getEndDate()));
         noticeEntity.setRegistrationDate(date);
-        noticeEntity.setAuthor(username);
+        noticeEntity.setUserEntity(user);
         noticeEntity.setNumberOfView(0);
         //set attach files
         List<AttachFileEntity> attachFileEntities = saveFile(input.getAttachFiles());
@@ -130,7 +136,7 @@ public class NoticeServiceImpl implements NoticeService {
      * @throws Exception If string's byte cannot be obtained
      */
     @Override
-    public NoticeEntity getNotice(Long id) throws Exception {
+    public NoticeResponseDto getNotice(Long id) throws Exception {
         NoticeEntity notice = noticeRepository.findById(id).orElseThrow(() -> new Exception("this notice doesn't exist"));
         log.info("Start findById result {}", notice);
         Date date = new Date();
@@ -139,8 +145,14 @@ public class NoticeServiceImpl implements NoticeService {
         }
         notice.setNumberOfView(notice.getNumberOfView() + 1);
         noticeRepository.saveAndFlush(notice);
+        NoticeResponseDto noticeResponseDto = new NoticeResponseDto();
+        noticeResponseDto.setAuthor(notice.getUserEntity().getUsername());
+        noticeResponseDto.setRegistrationDate(notice.getStartDate());
+        noticeResponseDto.setTitle(notice.getTitle());
+        noticeResponseDto.setNumberOfView(notice.getNumberOfView());
+        noticeResponseDto.setContent(notice.getContent());
         log.info("Start saveAndFlush success with result {}: ", notice );
-        return notice;
+        return noticeResponseDto;
     }
 
     private List<AttachFileEntity> saveFile(MultipartFile[] files) {

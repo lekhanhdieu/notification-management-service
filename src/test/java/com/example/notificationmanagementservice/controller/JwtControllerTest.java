@@ -68,7 +68,7 @@ public class JwtControllerTest {
         when(userDetailsService.loadUserByUsername(any())).thenReturn(applicationUser);
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
         when(jwtUtil.generateToken(any())).thenReturn("authentication");
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/authenticate")
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/login")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(authRequest));

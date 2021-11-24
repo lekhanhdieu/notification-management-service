@@ -1,8 +1,9 @@
 package com.example.notificationmanagementservice.service;
 
 
+import com.example.notificationmanagementservice.dto.NoticeResponseDto;
 import com.example.notificationmanagementservice.entity.NoticeEntity;
-import com.example.notificationmanagementservice.entity.dto.NoticeDto;
+import com.example.notificationmanagementservice.dto.NoticeDto;
 
 import java.text.ParseException;
 import java.util.List;
@@ -17,5 +18,5 @@ public interface NoticeService {
 
     List<NoticeEntity> getAll();
 
-    NoticeEntity getNotice(Long id) throws Exception;
+    NoticeResponseDto getNotice(Long id) throws Exception;
 }
